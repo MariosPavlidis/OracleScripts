@@ -1,0 +1,1 @@
+SELECT * AS value_mb FROM v$pgastat;

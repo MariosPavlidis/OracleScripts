@@ -1,0 +1,1 @@
+select sum(pga_alloc_mem)/1024/1024 alloc_mb,sum(pga_used_mem)/1024/1024 used_mb from v$process;

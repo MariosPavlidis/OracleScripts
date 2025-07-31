@@ -1,0 +1,1 @@
+select name,total_mb,free_mb from v$asm_diskgroup;
