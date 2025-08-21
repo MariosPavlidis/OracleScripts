@@ -1,6 +1,12 @@
-select sample_time,session_id,session_serial#,sql_id,temp_space_allocated/1024/1024 temp_mb,
-temp_space_allocated/1024/1024-lag(temp_space_allocated/1024/1024,1,0) over (order by sample_time) as temp_diff
---from dba_hist_active_sess_history
-from v$active_session_history
-WHERE  sample_time > SYSDATE - 5/(24*60) -- 5 mins
-order by sample_time asc;
+SELECT ash.inst_id,
+       TO_CHAR(TRUNC(ash.sample_time,'mi'),'YYYY-MM-DD HH24:MI') AS minute,
+       ash.sql_id,
+       ash.session_id AS sid,
+       ash.session_serial# AS serial#,
+       ROUND(SUM(ash.temp_space_allocated)/1024/1024,1)         AS mb_temp_alloc
+FROM   gv$active_session_history ash
+WHERE  ash.sample_time >= SYSTIMESTAMP - INTERVAL '60' MINUTE
+GROUP  BY ash.inst_id, TRUNC(ash.sample_time,'mi'),
+          ash.sql_id, ash.session_id, ash.session_serial#
+ORDER  BY mb_temp_alloc DESC nulls last
+FETCH FIRST 50 ROWS ONLY;
