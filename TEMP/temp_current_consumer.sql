@@ -1,4 +1,4 @@
-SELECT u.inst_id, s.sid, s.serial#, s.username, s.machine, s.module, s.s.osuser,
+SELECT u.inst_id, s.sid, s.serial#, s.username, s.machine, s.module, s.osuser,
        u.sql_id, u.segtype,
        ROUND(u.blocks * ts.block_size/1024/1024, 1) AS mb
 FROM   gv$tempseg_usage u
