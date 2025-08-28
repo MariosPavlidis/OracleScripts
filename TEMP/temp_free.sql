@@ -5,11 +5,11 @@ SELECT tablespace_name,
 FROM (
   SELECT tablespace_name,
          SUM(free_space) free_space,
-         SUM(total_space) total_space
+         SUM(tablespace_size) total_space
   FROM (
     SELECT tablespace_name,
            free_space,
-           total_space
+           tablespace_size
     FROM   dba_temp_free_space
   )
   GROUP BY tablespace_name
