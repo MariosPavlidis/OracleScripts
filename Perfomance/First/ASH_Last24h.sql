@@ -1,0 +1,1 @@
+select sample_time,wait_class,count(*) from v$active_session_history where sample_time>systimestamp-1/24 group by sample_time,wait_class;

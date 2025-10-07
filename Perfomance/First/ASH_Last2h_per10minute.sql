@@ -1,0 +1,1 @@
+select begin_interval_time,end_interval_time,db_time,db_cpu,executions_delta,parse_calls_delta from dba_hist_sysmetric_summary order by end_interval_time desc fetch first 24 rows only;
