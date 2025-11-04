@@ -1,0 +1,1 @@
+select name, type, required_mirror_free_mb, usable_file_mb from v$asm_diskgroup;
