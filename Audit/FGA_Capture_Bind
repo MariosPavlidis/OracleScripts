@@ -1,0 +1,36 @@
+
+BEGIN
+  DBMS_FGA.DROP_POLICY(object_schema=>'TIMEREG_MANAGEMENT', object_name=>'EMPLOYEES', policy_name=>'CAPTURE_BINDS');
+EXCEPTION WHEN OTHERS THEN NULL;
+END;
+/
+
+-- Create policy. EXTENDED writes bind values.
+BEGIN
+  DBMS_FGA.ADD_POLICY(
+    object_schema   => 'TIMEREG_MANAGEMENT',
+    object_name     => 'EMPLOYEES',
+    policy_name     => 'CAPTURE_BINDS',
+    statement_types => 'SELECT,INSERT,UPDATE,DELETE',
+    audit_condition => NULL,  -- add a predicate to throttle if needed eg 'emp_id=100' or 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') <> ''HR_MANAGER'''
+    audit_column => NULL, -- NULL for any column, comma separated values for multiple columns
+    audit_trail     => DBMS_FGA.DB + DBMS_FGA.EXTENDED,
+    enable          => TRUE
+    audit_column_opts => DBMS_FGA.ANY_COLUMNS -- OR DBMS_FGA.ALL_COLUMNS: when any or all audit columns are touched
+    handler_schema => NULL --NULL current. Schema of handler procedure
+    handler_module => NULL --procdure to be called on every audit event
+  );
+END;
+/
+
+
+SELECT extended_timestamp, db_user, object_schema, object_name,
+       statement_type, sql_text, sql_bind
+FROM   dba_fga_audit_trail
+WHERE  object_schema='TIMEREG_MANAGEMENT' AND object_name='EMPLOYEES'
+ORDER  BY extended_timestamp;
+
+SELECT *
+FROM   unified_audit_trail
+WHERE  object_schema='TIMEREG_MANAGEMENT' AND object_name='EMPLOYEES'
+ORDER  BY event_timestamp;
