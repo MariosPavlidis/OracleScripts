@@ -1,4 +1,4 @@
-SELECT   ''''||s.sid||','||s.serial#||',@'||s.inst_id||'''' sid,
+SELECT
     s.status,
     s.sql_id,
     s.event AS current_wait,
